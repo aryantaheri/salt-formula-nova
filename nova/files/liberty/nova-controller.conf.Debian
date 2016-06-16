@@ -204,6 +204,9 @@ region_name= {{ controller.network.region }}
 url=http://{{ controller.network.host }}:{{ controller.network.port }}
 
 service_metadata_proxy=True
+{%- if controller.get('networking', 'default') != "contrail" %}
+metadata_proxy_shared_secret = {{ controller.metadata.password }}
+{%- endif %}
 
 [cinder]
 os_region_name = {{ controller.identity.region }}
