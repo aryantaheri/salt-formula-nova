@@ -7,7 +7,7 @@
 
 {% set controller = salt['grains.filter_by']({
     'Debian': {
-        'pkgs': ['nova-novncproxy', 'novnc', 'nova-api', 'nova-ajax-console-proxy', 'nova-cert', 'nova-conductor', 'nova-consoleauth', 'nova-doc', 'nova-scheduler', 'python-novaclient', 'python-memcache', 'gettext-base'],
+        'pkgs': ['nova-consoleproxy', 'novnc', 'nova-api', 'nova-cert', 'nova-conductor', 'nova-consoleauth', 'nova-doc', 'nova-scheduler', 'python-novaclient', 'python-memcache', 'gettext-base'],
         'services': ['nova-api', 'nova-cert', 'nova-consoleauth', 'nova-scheduler', 'nova-conductor', 'nova-novncproxy'],
         'debug': false,
     },
@@ -16,7 +16,7 @@
         'services': ['openstack-nova-api', 'openstack-nova-cert', 'openstack-nova-consoleauth', 'openstack-nova-scheduler', 'openstack-nova-conductor', 'openstack-nova-novncproxy'],
         'debug': false,
     },
-}, merge=salt['pillar.get']('nova:controller')) %}
+}, merge=pillar.nova.get('controller', {})) %}
 
 {% set compute = salt['grains.filter_by']({
     'Debian': {
@@ -55,4 +55,9 @@
         'libvirt_bin': '/etc/default/libvirt-bin',
         'libvirt_service': 'libvirt-bin',
     },
-}, grain='oscodename', merge=salt['pillar.get']('nova:compute'))) %}
+}, grain='oscodename', merge=pillar.nova.get('compute', {}))) %}
+
+{%- if salt['pillar.get']('linux:system:repo:mirantis_openstack', False) %}
+{%- do compute.update({'libvirt_bin': '/etc/default/libvirtd'}) %}
+{%- do compute.update({'libvirt_service': 'libvirtd'}) %}
+{%- endif %}
