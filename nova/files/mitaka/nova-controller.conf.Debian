@@ -1,6 +1,5 @@
 {%- from "nova/map.jinja" import controller with context %}
 [DEFAULT]
-verbose = True
 log-dir = /var/log/nova
 {%- if controller.debug %}
 debug = True
@@ -113,6 +112,7 @@ rpc_conn_pool_size = 300
 
 [cache]
 {%- if controller.cache is defined %}
+backend = oslo_cache.memcache_pool
 enabled = true
 memcached_servers={%- for member in controller.cache.members %}{{ member.host }}:11211{% if not loop.last %},{% endif %}{%- endfor %}
 {%- endif %}
