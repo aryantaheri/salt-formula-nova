@@ -114,7 +114,7 @@ rpc_conn_pool_size = 300
 {%- if controller.cache is defined %}
 backend = oslo_cache.memcache_pool
 enabled = true
-memcached_servers={%- for member in controller.cache.members %}{{ member.host }}:11211{% if not loop.last %},{% endif %}{%- endfor %}
+memcache_servers={%- for member in controller.cache.members %}{{ member.host }}:11211{% if not loop.last %},{% endif %}{%- endfor %}
 {%- endif %}
 
 [keystone_authtoken]
